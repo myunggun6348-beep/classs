@@ -1,0 +1,2627 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>고3 2반 진로·상담 앱</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172033;
+      --muted: #617086;
+      --line: #d8e0ec;
+      --panel: #ffffff;
+      --soft: #f5f7fb;
+      --blue: #2563eb;
+      --blue-dark: #1d4ed8;
+      --green: #0f766e;
+      --red: #b42318;
+      --amber: #a15c07;
+      --violet: #6d28d9;
+      --teal: #0891b2;
+      --paper: #f7f8f3;
+      --leaf: #486b49;
+      --track: #7f9c93;
+      --shadow: 0 18px 42px rgba(32, 55, 49, 0.11);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Pretendard", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      color: var(--ink);
+      overflow-x: hidden;
+      background: var(--paper);
+    }
+
+    body::before,
+    body::after {
+      position: fixed;
+      content: "";
+      pointer-events: none;
+    }
+
+    body::before {
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(44vw, 620px);
+      z-index: 0;
+      background:
+        linear-gradient(115deg, rgba(255, 255, 255, 0) 0 38%, rgba(255, 255, 255, 0.58) 38% 40%, rgba(255, 255, 255, 0) 40%),
+        repeating-linear-gradient(100deg, rgba(255, 255, 255, 0.28) 0 1px, transparent 1px 34px),
+        linear-gradient(180deg, rgba(127, 156, 147, 0.32) 0 32%, rgba(255, 255, 255, 0.88) 32% 35%, rgba(72, 107, 73, 0.22) 35% 68%, rgba(255, 255, 255, 0.82) 68% 71%, rgba(15, 118, 110, 0.22) 71% 100%);
+      border-left: 1px solid rgba(255, 255, 255, 0.72);
+    }
+
+    body::after {
+      top: 86px;
+      right: min(8vw, 112px);
+      width: 330px;
+      height: 330px;
+      z-index: 0;
+      opacity: 0.82;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.86)) 0 0 / 124px 1px no-repeat,
+        linear-gradient(rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.86)) 123px 0 / 1px 92px no-repeat,
+        linear-gradient(rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.86)) 123px 91px / 126px 1px no-repeat,
+        linear-gradient(rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.86)) 248px 91px / 1px 84px no-repeat,
+        linear-gradient(rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.86)) 248px 174px / 82px 1px no-repeat,
+        linear-gradient(rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.86)) 328px 174px / 1px 86px no-repeat,
+        linear-gradient(rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.86)) 268px 259px / 61px 1px no-repeat,
+        linear-gradient(90deg, rgba(72, 107, 73, 0.34), rgba(37, 99, 235, 0.16));
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      min-height: 42px;
+      border: 0;
+      border-radius: 7px;
+      padding: 10px 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.56;
+      transform: none;
+    }
+
+    .primary {
+      color: #fff;
+      background: var(--blue);
+      box-shadow: 0 12px 24px rgba(37, 99, 235, 0.22);
+    }
+
+    .primary:hover {
+      background: var(--blue-dark);
+    }
+
+    .secondary {
+      color: #1f2a3b;
+      background: #e8edf5;
+    }
+
+    .danger {
+      color: #fff;
+      background: var(--red);
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+      background: #fff;
+      color: var(--ink);
+      padding: 11px 12px;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 108px;
+      resize: vertical;
+      line-height: 1.55;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+    }
+
+    label {
+      display: grid;
+      gap: 7px;
+      color: #263349;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    label span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.45;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      width: min(1240px, 100%);
+      margin: 0 auto;
+      padding: 22px 22px 96px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding: 8px 0 20px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(26px, 4vw, 42px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin: 0;
+      max-width: 780px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .profile-pill {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      min-width: 260px;
+      padding: 12px 14px;
+      border: 1px solid rgba(195, 208, 198, 0.9);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: 0 12px 28px rgba(32, 55, 49, 0.08);
+      backdrop-filter: blur(10px);
+    }
+
+    .avatar {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--blue), var(--green));
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    .profile-pill strong,
+    .profile-pill span {
+      display: block;
+    }
+
+    .profile-pill span {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .nav {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(78px, 1fr));
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tab {
+      display: grid;
+      place-items: center;
+      min-height: 52px;
+      border: 1px solid rgba(195, 208, 198, 0.9);
+      border-radius: 8px;
+      color: #27364d;
+      background: rgba(255, 255, 255, 0.86);
+      font-weight: 900;
+      box-shadow: 0 10px 22px rgba(32, 55, 49, 0.06);
+    }
+
+    .tab.active {
+      border-color: var(--blue);
+      color: #fff;
+      background: var(--blue);
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .panel {
+      border: 1px solid rgba(195, 208, 198, 0.92);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.93);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(216, 224, 213, 0.9);
+      background: rgba(251, 252, 248, 0.9);
+    }
+
+    .panel-head h2,
+    .section-title {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    .head-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .panel-body {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .metric {
+      min-height: 116px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .metric strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    #home > :not(.home-dashboard) {
+      display: none;
+    }
+
+    .home-dashboard {
+      display: grid;
+      gap: 16px;
+    }
+
+    .home-dashboard[hidden] {
+      display: none;
+    }
+
+    .home-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .home-hero-main {
+      min-height: 170px;
+      padding: 22px;
+      border: 1px solid rgba(195, 208, 198, 0.92);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: var(--shadow);
+    }
+
+    .home-hero-main h2 {
+      margin: 0 0 10px;
+      font-size: clamp(24px, 3.4vw, 36px);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .home-hero-main p {
+      margin: 0;
+      max-width: 720px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .home-quick {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .home-quick button {
+      min-height: 72px;
+      color: #203049;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(195, 208, 198, 0.92);
+      box-shadow: 0 10px 22px rgba(32, 55, 49, 0.06);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .summary-cell {
+      min-height: 88px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .summary-cell span {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .summary-cell strong {
+      display: block;
+      overflow-wrap: anywhere;
+      line-height: 1.35;
+    }
+
+    .progress-track {
+      height: 12px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e8edf5;
+    }
+
+    .progress-track span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue), var(--green));
+    }
+
+    .progress-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .progress-table th,
+    .progress-table td {
+      padding: 11px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      font-size: 13px;
+      vertical-align: middle;
+    }
+
+    .progress-table th {
+      color: #263349;
+      background: #f8fafc;
+      font-weight: 900;
+    }
+
+    .progress-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .item {
+      display: grid;
+      gap: 8px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .item strong {
+      line-height: 1.35;
+    }
+
+    .item p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #edf2f7;
+      color: #344256;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .badge.blue {
+      color: #1d4ed8;
+      background: #dbeafe;
+    }
+
+    .badge.green {
+      color: #0f766e;
+      background: #ccfbf1;
+    }
+
+    .badge.amber {
+      color: #92400e;
+      background: #fef3c7;
+    }
+
+    .badge.violet {
+      color: #6d28d9;
+      background: #ede9fe;
+    }
+
+    .badge.red {
+      color: #b42318;
+      background: #fee4e2;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .wide {
+      grid-column: 1 / -1;
+    }
+
+    .toolbar-row {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) 170px 170px;
+      gap: 10px;
+    }
+
+    .application-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .application-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .application-summary {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 14px;
+      background: #ffffff;
+    }
+
+    .rank {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--teal);
+      font-weight: 900;
+    }
+
+    .application-title {
+      min-width: 0;
+    }
+
+    .application-title strong,
+    .application-title span {
+      display: block;
+      overflow-wrap: anywhere;
+    }
+
+    .application-title span {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .application-fields {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      padding: 14px;
+      border-top: 1px solid var(--line);
+      background: #f8fafc;
+    }
+
+    .application-fields label {
+      font-size: 12px;
+    }
+
+    .catalog-search {
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      background: #eff6ff;
+    }
+
+    .catalog-results {
+      display: grid;
+      gap: 8px;
+      max-height: 260px;
+      overflow: auto;
+    }
+
+    .catalog-result {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid #c7d2fe;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .catalog-result strong,
+    .catalog-result span {
+      display: block;
+    }
+
+    .catalog-result span {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .sync-state {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      color: #1e3a8a;
+      background: #eff6ff;
+      line-height: 1.45;
+      font-size: 13px;
+    }
+
+    .notification-dot {
+      display: none;
+      min-width: 24px;
+      height: 24px;
+      place-items: center;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--red);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    body.teacher .notification-dot.has-new {
+      display: grid;
+    }
+
+    .task-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .task-row input {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--blue);
+    }
+
+    .task-row.done .task-text {
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    .task-text small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .teacher-only {
+      display: none;
+    }
+
+    body.teacher .teacher-only {
+      display: block;
+    }
+
+    body.teacher .tab.teacher-only {
+      display: grid;
+    }
+
+    body.teacher .screen.teacher-only {
+      display: none;
+    }
+
+    body.teacher .screen.teacher-only.active {
+      display: block;
+    }
+
+    body.student .teacher-hidden {
+      display: none;
+    }
+
+    .login {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(15, 23, 42, 0.42);
+      backdrop-filter: blur(8px);
+    }
+
+    .login-card {
+      width: min(540px, 100%);
+      border: 1px solid rgba(255, 255, 255, 0.44);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.26);
+      overflow: hidden;
+    }
+
+    .login-card header {
+      padding: 20px;
+      color: #fff;
+      background: linear-gradient(135deg, #1d4ed8, #0f766e);
+    }
+
+    .login-card h2 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      letter-spacing: 0;
+    }
+
+    .login-card p {
+      margin: 0;
+      line-height: 1.55;
+      opacity: 0.92;
+    }
+
+    .login-form {
+      padding: 20px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .login-subhead {
+      display: grid;
+      gap: 4px;
+      padding: 12px;
+      border: 1px solid #d8e0ec;
+      border-radius: 8px;
+      background: #f8fafc;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .login-subhead strong {
+      color: var(--ink);
+      font-size: 15px;
+    }
+
+    .teacher-login-panel {
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      background: #eff6ff;
+    }
+
+    .teacher-login-panel[hidden] {
+      display: none;
+    }
+
+    .login-divider {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .login-divider::before,
+    .login-divider::after {
+      height: 1px;
+      flex: 1;
+      content: "";
+      background: var(--line);
+    }
+
+    .mode-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .mode-switch input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .mode-switch label {
+      display: grid;
+      place-items: center;
+      min-height: 44px;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+      background: #fff;
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    .mode-switch input:checked + label {
+      border-color: var(--blue);
+      color: var(--blue-dark);
+      background: #eff6ff;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 82px;
+      z-index: 30;
+      transform: translateX(-50%) translateY(20px);
+      max-width: min(500px, calc(100% - 28px));
+      padding: 12px 14px;
+      border-radius: 8px;
+      color: #fff;
+      background: #172033;
+      box-shadow: 0 16px 34px rgba(23, 32, 51, 0.28);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 980px) {
+      body::before {
+        width: 58vw;
+        opacity: 0.62;
+      }
+
+      body::after {
+        top: 58px;
+        right: -84px;
+        transform: scale(0.72);
+        opacity: 0.46;
+      }
+
+      .app {
+        padding: 16px 14px 90px;
+      }
+
+      .topbar,
+      .home-hero,
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .home-quick,
+      .summary-grid,
+      .progress-table {
+        grid-template-columns: 1fr;
+      }
+
+      .home-quick {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .progress-table {
+        display: block;
+        overflow-x: auto;
+      }
+
+      .profile-pill {
+        width: 100%;
+      }
+
+      .grid-3,
+      .form-grid,
+      .toolbar-row,
+      .application-fields {
+        grid-template-columns: 1fr;
+      }
+
+      .application-summary {
+        grid-template-columns: auto 1fr;
+      }
+
+      .application-summary .head-actions {
+        grid-column: 1 / -1;
+        justify-content: stretch;
+      }
+
+      .application-summary .head-actions button {
+        width: 100%;
+      }
+
+      .nav {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 15;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0;
+        margin: 0;
+        border-top: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.96);
+        box-shadow: 0 -12px 26px rgba(23, 32, 51, 0.1);
+      }
+
+      .tab {
+        min-height: 58px;
+        border-width: 0 1px 0 0;
+        border-radius: 0;
+        box-shadow: none;
+        font-size: 12px;
+      }
+
+      .panel-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .head-actions {
+        width: 100%;
+        justify-content: stretch;
+      }
+
+      .head-actions button {
+        flex: 1;
+      }
+    }
+  </style>
+</head>
+<body class="student">
+  <div id="login" class="login">
+    <section class="login-card" aria-labelledby="loginTitle">
+      <header>
+        <h2 id="loginTitle">고3 2반 진로·상담 보드</h2>
+        <p>학생은 빠르게 입장하고, 교사용 화면은 별도 비밀번호로 보호합니다.</p>
+      </header>
+      <div class="login-form">
+        <input id="modeStudent" name="mode" type="radio" value="student" checked hidden>
+        <input id="modeTeacher" name="mode" type="radio" value="teacher" hidden>
+        <div class="login-subhead">
+          <strong>학생 입장</strong>
+          <span>이름과 번호, 학급코드를 입력하면 바로 학생 홈으로 들어갑니다.</span>
+        </div>
+        <div class="form-grid">
+          <label>
+            이름
+            <input id="loginName" type="text" placeholder="예: 김민서">
+          </label>
+          <label>
+            번호
+            <input id="loginNumber" type="number" min="1" max="40" placeholder="예: 12">
+          </label>
+        </div>
+        <label>
+          학급코드
+          <span>학생용 기본 학급코드는 32입니다.</span>
+          <input id="classCode" type="password" inputmode="numeric" placeholder="예: 32">
+        </label>
+        <button id="loginBtn" class="primary" type="button">학생으로 입장</button>
+        <div class="login-divider">교사용</div>
+        <button id="teacherLoginToggleBtn" class="secondary" type="button">교사용 로그인</button>
+        <div id="teacherLoginPanel" class="teacher-login-panel" hidden>
+          <label>
+            교사 이름
+            <input id="teacherName" type="text" placeholder="예: 담임교사">
+          </label>
+          <label>
+            교사용 비밀번호
+            <span>시제품 기본값은 20302입니다. 실제 배포 시 학교 계정 인증으로 교체하세요.</span>
+            <input id="teacherPin" type="password" placeholder="교사용 비밀번호">
+          </label>
+          <button id="teacherLoginBtn" class="primary" type="button">교사 화면 입장</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <h1>고3 2반 진로·상담 보드</h1>
+        <p class="lead">진로, 상담 신청, 희망대학 10개 관리, 입시 일정, 할 일을 한곳에서 다룹니다. 상담 기록은 교사용 화면에서만 확인됩니다.</p>
+      </div>
+      <div class="profile-pill">
+        <div id="avatar" class="avatar">3-2</div>
+        <div>
+          <strong id="profileName">로그인 전</strong>
+          <span id="profileRole">역할을 선택해 주세요</span>
+        </div>
+        <span id="notificationDot" class="notification-dot">0</span>
+        <button id="logoutBtn" class="secondary" type="button">전환</button>
+      </div>
+    </header>
+
+    <nav class="nav" aria-label="주요 탭">
+      <button class="tab active" data-tab="home" type="button">홈</button>
+      <button class="tab" data-tab="notice" type="button">공지</button>
+      <button class="tab" data-tab="calendar" type="button">일정</button>
+      <button class="tab" data-tab="career" type="button">진로</button>
+      <button class="tab" data-tab="counsel" type="button">상담</button>
+      <button class="tab" data-tab="admission" type="button">원서</button>
+      <button class="tab" data-tab="library" type="button">자료</button>
+      <button class="tab teacher-only" data-tab="teacher" type="button">교사용</button>
+    </nav>
+
+    <section id="home" class="screen active">
+      <div id="studentHomeDashboard" class="home-dashboard">
+        <div class="home-hero">
+          <section class="home-hero-main">
+            <h2 id="studentHomeTitle">오늘의 진로 준비</h2>
+            <p id="studentHomeLead">할 일, 상담, 희망대학, 마감 일정을 한 화면에서 확인합니다.</p>
+          </section>
+          <section class="panel">
+            <div class="panel-head">
+              <h2>오늘의 할 일</h2>
+              <span id="homeTaskBadge" class="badge amber">0개 남음</span>
+            </div>
+            <div id="homeTaskList" class="panel-body list"></div>
+          </section>
+        </div>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>빠른 실행</h2>
+          </div>
+          <div class="panel-body home-quick">
+            <button class="secondary" data-tab-jump="notice" type="button">공지확인</button>
+            <button class="secondary" data-tab-jump="admission" type="button">대학검색</button>
+            <button class="secondary" data-tab-jump="counsel" type="button">상담신청</button>
+            <button class="secondary" data-tab-jump="admission" type="button">원서표</button>
+            <button class="secondary" data-tab-jump="career" type="button">진로카드</button>
+          </div>
+        </section>
+
+        <div class="grid">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>나의 진로 요약</h2>
+              <button class="secondary" data-tab-jump="career" type="button">수정</button>
+            </div>
+            <div id="homeCareerSummary" class="panel-body"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head">
+              <h2>원서 진행률</h2>
+              <button class="secondary" data-tab-jump="admission" type="button">관리</button>
+            </div>
+            <div id="homeApplicationProgress" class="panel-body list"></div>
+          </section>
+        </div>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>마감 임박 일정</h2>
+          </div>
+          <div id="homeDeadlineList" class="panel-body list"></div>
+        </section>
+      </div>
+
+      <div id="teacherHomeDashboard" class="home-dashboard" hidden>
+        <section class="panel">
+          <div class="panel-head">
+            <h2>우리 반 전체 현황</h2>
+            <span class="badge blue">교사용 홈</span>
+          </div>
+          <div id="teacherHomeMetrics" class="panel-body grid-3"></div>
+        </section>
+
+        <div class="grid">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>상담 신청 알림</h2>
+              <button class="secondary" data-tab-jump="teacher" type="button">상세 보기</button>
+            </div>
+            <div id="teacherHomeRequests" class="panel-body list"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head">
+              <h2>미작성·주의 학생</h2>
+            </div>
+            <div id="teacherHomeWarnings" class="panel-body list"></div>
+          </section>
+        </div>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>학생별 진행률 표</h2>
+          </div>
+          <div id="teacherHomeProgress" class="panel-body"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>교사용 빠른 실행</h2>
+          </div>
+          <div class="panel-body home-quick">
+            <button class="secondary" data-tab-jump="teacher" type="button">상담 확인</button>
+            <button class="secondary" data-tab-jump="teacher" type="button">학생 데이터</button>
+            <button class="secondary" data-tab-jump="notice" type="button">공지 작성</button>
+            <button class="secondary" data-tab-jump="admission" type="button">원서 점검</button>
+            <button class="secondary" data-tab-jump="calendar" type="button">일정 관리</button>
+          </div>
+        </section>
+      </div>
+
+      <div class="grid-3">
+        <article class="metric">
+          <strong id="metricTasks">0</strong>
+          <span>남은 개인 할 일입니다. 마감이 가까운 일부터 처리하면 부담이 줄어듭니다.</span>
+        </article>
+        <article class="metric">
+          <strong id="metricApplications">0</strong>
+          <span>입력된 희망대학 수입니다. 최대 10개까지 관리할 수 있습니다.</span>
+        </article>
+        <article class="metric">
+          <strong id="metricCounsel">0</strong>
+          <span>접수된 상담 신청입니다. 학생은 신청 현황만 보고, 기록은 교사 화면에만 보입니다.</span>
+        </article>
+      </div>
+      <div class="grid" style="margin-top:16px">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>오늘 확인할 것</h2>
+            <div class="head-actions">
+              <button class="secondary" data-tab-jump="counsel" type="button">상담 신청</button>
+              <button class="secondary" data-tab-jump="admission" type="button">원서 관리</button>
+            </div>
+          </div>
+          <div id="todayList" class="panel-body list"></div>
+        </section>
+        <section class="panel">
+          <div class="panel-head">
+            <h2>내 할 일</h2>
+          </div>
+          <div id="taskList" class="panel-body list"></div>
+        </section>
+      </div>
+      <section class="panel" style="margin-top:16px">
+        <div class="panel-head">
+          <h2>진로 카드 누적 기록</h2>
+          <div class="head-actions">
+            <button id="restoreLatestCareerBtn" class="secondary" type="button">최근 기록 불러오기</button>
+            <button id="clearCareerHistoryBtn" class="secondary" type="button">기록 정리</button>
+          </div>
+        </div>
+        <div id="careerHistoryList" class="panel-body list"></div>
+      </section>
+    </section>
+
+    <section id="notice" class="screen">
+      <div class="grid">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>학급 공지</h2>
+            <span class="badge blue">읽음 확인용</span>
+          </div>
+          <div id="noticeList" class="panel-body list"></div>
+        </section>
+        <section class="panel teacher-only">
+          <div class="panel-head">
+            <h2>공지 등록</h2>
+          </div>
+          <div class="panel-body">
+            <label>제목 <input id="noticeTitle" type="text" placeholder="예: 수시 원서 접수 전 확인"></label>
+            <label>내용 <textarea id="noticeBody" placeholder="학생에게 전달할 내용을 입력하세요."></textarea></label>
+            <button id="addNoticeBtn" class="primary" type="button">공지 올리기</button>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="calendar" class="screen">
+      <div class="grid">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>주요 일정</h2>
+            <span class="badge amber">고3 일정 관리</span>
+          </div>
+          <div id="scheduleList" class="panel-body list"></div>
+        </section>
+        <section class="panel teacher-only">
+          <div class="panel-head">
+            <h2>일정 추가</h2>
+          </div>
+          <div class="panel-body">
+            <div class="form-grid">
+              <label>날짜 <input id="scheduleDate" type="date"></label>
+              <label>구분
+                <select id="scheduleType">
+                  <option>학사</option>
+                  <option>상담</option>
+                  <option>입시</option>
+                  <option>평가</option>
+                </select>
+              </label>
+            </div>
+            <label>일정명 <input id="scheduleTitle" type="text" placeholder="예: 9월 모의평가"></label>
+            <button id="addScheduleBtn" class="primary" type="button">일정 추가</button>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="career" class="screen">
+      <div class="grid">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>나의 진로 카드</h2>
+            <span class="badge green">학생 작성</span>
+          </div>
+          <div class="panel-body">
+            <div class="form-grid">
+              <label>희망 직업 <input id="careerJob" type="text" placeholder="예: 데이터 분석가"></label>
+              <label>희망 학과 <input id="careerMajor" type="text" placeholder="예: 통계학과"></label>
+              <label>관심 대학 <input id="careerCollege" type="text" placeholder="예: A대, B대"></label>
+              <label>강점 과목 <input id="careerStrength" type="text" placeholder="예: 미적분, 영어"></label>
+            </div>
+            <button id="saveCareerBtn" class="primary" type="button">진로 카드 저장</button>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-head">
+            <h2>진로 점검 질문</h2>
+          </div>
+          <div class="panel-body list">
+            <article class="item"><strong>선택 과목이 희망 학과와 연결되는가?</strong><p>학생부와 면접에서 설명 가능한 연결 고리를 만들어 둡니다.</p></article>
+            <article class="item"><strong>성적과 희망 전형 사이의 간격은 어느 정도인가?</strong><p>상향, 적정, 안정 지원을 나누어 현실적인 전략을 세웁니다.</p></article>
+            <article class="item"><strong>희망대학 10개 후보가 충분히 넓은가?</strong><p>지역, 전형, 학과 유사성을 함께 보며 상담 선택지를 넓힙니다.</p></article>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="counsel" class="screen">
+      <div class="grid">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>진로 상담 신청</h2>
+            <span class="badge violet">기록은 교사 전용</span>
+          </div>
+          <div class="panel-body">
+            <div class="form-grid">
+              <label>희망 상담일 <input id="counselDate" type="date"></label>
+              <label>상담 주제
+                <select id="counselTopic">
+                  <option>진로 방향</option>
+                  <option>학과 선택</option>
+                  <option>수시 지원</option>
+                  <option>정시 전략</option>
+                  <option>학습 계획</option>
+                  <option>개인 고민</option>
+                </select>
+              </label>
+            </div>
+            <label>현재 가장 고민되는 점 <textarea id="counselConcern" placeholder="상담 전에 선생님이 이해하면 좋을 내용을 적어 주세요."></textarea></label>
+            <label>상담 후 기대하는 도움 <textarea id="counselNeed" placeholder="예: 학과 선택 기준을 정하고 싶어요."></textarea></label>
+            <button id="requestCounselBtn" class="primary" type="button">상담 신청하기</button>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-head">
+            <h2>상담 신청 현황</h2>
+            <button id="enableNotifyBtn" class="secondary teacher-only" type="button">브라우저 알림 켜기</button>
+          </div>
+          <div id="myCounselList" class="panel-body list"></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="admission" class="screen">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>희망대학·원서 관리표</h2>
+          </div>
+          <div class="head-actions">
+            <span class="badge amber">최대 10개</span>
+            <button id="saveApplicationsBtn" class="primary" type="button">원서표 저장</button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="catalog-search">
+            <div class="form-grid">
+              <label>
+                전국 대학·학과 검색
+                <input id="catalogSearch" type="search" placeholder="예: 서울 통계, 부산 간호, 컴퓨터, 경제">
+              </label>
+              <label>
+                넣을 순번
+                <select id="catalogTargetRank">
+                  <option value="1">1번</option>
+                  <option value="2">2번</option>
+                  <option value="3">3번</option>
+                  <option value="4">4번</option>
+                  <option value="5">5번</option>
+                  <option value="6">6번</option>
+                  <option value="7">7번</option>
+                  <option value="8">8번</option>
+                  <option value="9">9번</option>
+                  <option value="10">10번</option>
+                </select>
+              </label>
+            </div>
+            <div class="toolbar-row">
+              <label>
+                지역 필터
+                <select id="catalogRegionFilter">
+                  <option value="">전체 지역</option>
+                  <option>서울</option>
+                  <option>경기</option>
+                  <option>인천</option>
+                  <option>강원</option>
+                  <option>대전</option>
+                  <option>충북</option>
+                  <option>충남</option>
+                  <option>대구</option>
+                  <option>경북</option>
+                  <option>부산</option>
+                  <option>울산</option>
+                  <option>경남</option>
+                  <option>광주</option>
+                  <option>전북</option>
+                  <option>전남</option>
+                  <option>제주</option>
+                </select>
+              </label>
+              <label>
+                계열 필터
+                <select id="catalogFieldFilter">
+                  <option value="">전체 계열</option>
+                  <option>인문</option>
+                  <option>사회</option>
+                  <option>교육</option>
+                  <option>자연</option>
+                  <option>공학</option>
+                  <option>의약</option>
+                  <option>예체능</option>
+                </select>
+              </label>
+              <label>
+                대학명 필터
+                <input id="catalogCollegeFilter" type="search" placeholder="예: 부산대, 서울대">
+              </label>
+            </div>
+            <div id="catalogResults" class="catalog-results"></div>
+          </div>
+          <div class="toolbar-row">
+            <label>
+              선택한 10개 안에서 검색
+              <input id="applicationSearch" type="search" placeholder="예: 통계, 간호, 서울, 교과">
+            </label>
+            <label>
+              상태 필터
+              <select id="applicationStatusFilter">
+                <option value="">전체</option>
+                <option>관심</option>
+                <option>검토 중</option>
+                <option>상향</option>
+                <option>적정</option>
+                <option>안정</option>
+                <option>제출 완료</option>
+              </select>
+            </label>
+            <label>
+              전형 필터
+              <select id="applicationTypeFilter">
+                <option value="">전체</option>
+                <option>학생부교과</option>
+                <option>학생부종합</option>
+                <option>논술</option>
+                <option>실기/실적</option>
+                <option>정시</option>
+                <option>기타</option>
+              </select>
+            </label>
+          </div>
+          <div id="applicationList" class="application-list"></div>
+        </div>
+      </section>
+      <div class="grid" style="margin-top:16px">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>개인 할 일 추가</h2>
+          </div>
+          <div class="panel-body">
+            <div class="form-grid">
+              <label>마감일 <input id="taskDue" type="date"></label>
+              <label>구분
+                <select id="taskType">
+                  <option>원서</option>
+                  <option>상담</option>
+                  <option>학습</option>
+                  <option>자료</option>
+                </select>
+              </label>
+            </div>
+            <label>할 일 <input id="taskTitle" type="text" placeholder="예: 희망 대학 전형 요약하기"></label>
+            <button id="addTaskBtn" class="primary" type="button">내 할 일 추가</button>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-head">
+            <h2>원서 전략 보기</h2>
+          </div>
+          <div id="applicationInsight" class="panel-body list"></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="library" class="screen">
+      <section class="panel">
+        <div class="panel-head">
+          <h2>자료실</h2>
+          <span class="badge blue">진로·입시 참고</span>
+        </div>
+        <div id="libraryList" class="panel-body list"></div>
+      </section>
+    </section>
+
+    <section id="teacher" class="screen teacher-only">
+      <div class="grid">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>담임 대시보드</h2>
+            <div class="head-actions">
+              <button id="markNotificationsReadBtn" class="secondary" type="button">알림 확인</button>
+              <button id="exportSheetsBtn" class="secondary" type="button">Sheets로 전체 전송</button>
+            </div>
+          </div>
+          <div id="teacherDashboard" class="panel-body list"></div>
+        </section>
+        <section class="panel">
+          <div class="panel-head">
+            <h2>상담 기록 작성</h2>
+          </div>
+          <div class="panel-body">
+            <label>학생 선택
+              <select id="recordStudent"></select>
+            </label>
+            <label>상담 메모
+              <textarea id="recordMemo" placeholder="학생에게 공개되지 않는 교사용 상담 기록을 입력하세요."></textarea>
+            </label>
+            <label>다음 조치
+              <input id="recordNext" type="text" placeholder="예: 다음 주 원서 3안 비교">
+            </label>
+            <button id="saveRecordBtn" class="primary" type="button">교사용 기록 저장</button>
+          </div>
+        </section>
+      </div>
+      <div class="grid" style="margin-top:16px">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Google Sheets 연동</h2>
+            <span id="syncBadge" class="badge">미설정</span>
+          </div>
+          <div class="panel-body">
+            <div class="sync-state">
+              <strong>연동 방식</strong>
+              <span>Apps Script 웹앱 URL을 입력하면 상담 신청, 진로 카드, 원서표, 상담 기록이 Google Sheets로 전송됩니다.</span>
+            </div>
+            <label>
+              Apps Script 웹앱 URL
+              <input id="sheetsUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec">
+            </label>
+            <div class="form-grid">
+              <label>
+                교사 알림 이메일
+                <input id="teacherEmail" type="email" placeholder="teacher@example.com">
+              </label>
+              <label>
+                마지막 동기화
+                <input id="lastSync" type="text" readonly>
+              </label>
+            </div>
+            <button id="saveSheetsConfigBtn" class="primary" type="button">Sheets 설정 저장</button>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-head">
+            <h2>알림함</h2>
+            <span class="badge red">상담 신청 중심</span>
+          </div>
+          <div id="notificationList" class="panel-body list"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const storeKey = "class32-career-app-v2";
+    const legacyStoreKey = "class32-career-app-v1";
+    const teacherPin = "20302";
+    const studentClassCode = "32";
+    const applicationLimit = 10;
+    const majorCatalog = [
+      { region: "서울", college: "서울대학교", major: "경제학부", field: "사회" },
+      { region: "서울", college: "서울대학교", major: "통계학과", field: "자연" },
+      { region: "서울", college: "연세대학교", major: "경영학과", field: "사회" },
+      { region: "서울", college: "연세대학교", major: "인공지능학과", field: "공학" },
+      { region: "서울", college: "고려대학교", major: "수학과", field: "자연" },
+      { region: "서울", college: "고려대학교", major: "컴퓨터학과", field: "공학" },
+      { region: "서울", college: "성균관대학교", major: "글로벌경제학과", field: "사회" },
+      { region: "서울", college: "한양대학교", major: "데이터사이언스학부", field: "공학" },
+      { region: "서울", college: "중앙대학교", major: "간호학과", field: "의약" },
+      { region: "서울", college: "경희대학교", major: "호텔관광대학", field: "사회" },
+      { region: "경기", college: "아주대학교", major: "소프트웨어학과", field: "공학" },
+      { region: "경기", college: "가천대학교", major: "간호학과", field: "의약" },
+      { region: "경기", college: "단국대학교", major: "특수교육과", field: "교육" },
+      { region: "인천", college: "인하대학교", major: "항공우주공학과", field: "공학" },
+      { region: "인천", college: "인천대학교", major: "무역학부", field: "사회" },
+      { region: "강원", college: "강원대학교", major: "수의예과", field: "의약" },
+      { region: "충북", college: "충북대학교", major: "화학공학과", field: "공학" },
+      { region: "충남", college: "충남대학교", major: "기계공학부", field: "공학" },
+      { region: "대전", college: "KAIST", major: "전산학부", field: "공학" },
+      { region: "대구", college: "경북대학교", major: "전자공학부", field: "공학" },
+      { region: "부산", college: "부산대학교", major: "의예과", field: "의약" },
+      { region: "부산", college: "부산대학교", major: "간호학과", field: "의약" },
+      { region: "부산", college: "부산대학교", major: "약학부", field: "의약" },
+      { region: "부산", college: "부산대학교", major: "수학과", field: "자연" },
+      { region: "부산", college: "부산대학교", major: "통계학과", field: "자연" },
+      { region: "부산", college: "부산대학교", major: "화학과", field: "자연" },
+      { region: "부산", college: "부산대학교", major: "기계공학부", field: "공학" },
+      { region: "부산", college: "부산대학교", major: "전기공학과", field: "공학" },
+      { region: "부산", college: "부산대학교", major: "컴퓨터공학과", field: "공학" },
+      { region: "부산", college: "부산대학교", major: "경영학과", field: "사회" },
+      { region: "부산", college: "부산대학교", major: "경제학부", field: "사회" },
+      { region: "부산", college: "부산대학교", major: "교육학과", field: "교육" },
+      { region: "부산", college: "부산대학교", major: "국어교육과", field: "교육" },
+      { region: "부산", college: "동아대학교", major: "경찰학과", field: "사회" },
+      { region: "부산", college: "동아대학교", major: "간호학과", field: "의약" },
+      { region: "부산", college: "부경대학교", major: "수산생명의학과", field: "자연" },
+      { region: "부산", college: "부경대학교", major: "컴퓨터공학전공", field: "공학" },
+      { region: "울산", college: "울산대학교", major: "의예과", field: "의약" },
+      { region: "경남", college: "경상국립대학교", major: "수학교육과", field: "교육" },
+      { region: "전북", college: "전북대학교", major: "농경제유통학부", field: "사회" },
+      { region: "전남", college: "전남대학교", major: "전기공학과", field: "공학" },
+      { region: "광주", college: "조선대학교", major: "치의예과", field: "의약" },
+      { region: "제주", college: "제주대학교", major: "초등교육과", field: "교육" }
+    ];
+
+    const defaultData = {
+      config: {
+        sheetsUrl: "",
+        teacherEmail: "",
+        lastSync: ""
+      },
+      notices: [
+        { id: 1, title: "상담 신청 전 진로 카드 작성", body: "첫 상담 전까지 희망 직업, 희망 학과, 관심 대학, 강점 과목을 입력해 주세요.", date: "2026-06-28", readBy: [] },
+        { id: 2, title: "희망대학 10개 목록 입력", body: "원서 탭에서 대학·학과를 검색해 선택하고, 전형과 마감일을 10개까지 정리합니다.", date: "2026-06-28", readBy: [] }
+      ],
+      schedules: [
+        { id: 1, date: "2026-07-03", type: "상담", title: "1차 진로 상담 주간 시작" },
+        { id: 2, date: "2026-07-10", type: "입시", title: "희망 대학 1차 목록 제출" },
+        { id: 3, date: "2026-07-18", type: "평가", title: "개인 학습 계획 점검" }
+      ],
+      library: [
+        { title: "진로 카드 작성 가이드", tag: "진로", body: "희망 직업, 학과, 관심 대학, 강점 과목을 간단히 정리합니다." },
+        { title: "상담 전 질문지", tag: "상담", body: "가장 고민되는 점, 선택지, 필요한 도움을 미리 적으면 상담의 밀도가 높아집니다." },
+        { title: "원서 마감 체크리스트", tag: "입시", body: "전형명, 마감일, 제출 서류, 면접일, 최저학력기준을 함께 확인합니다." }
+      ],
+      students: {},
+      counselRequests: [],
+      records: [],
+      notifications: []
+    };
+
+    let state = loadState();
+    let session = { role: "student", name: "", number: "" };
+    let visibleCatalogResults = [];
+    let catalogSearchTimer = 0;
+    let catalogSearchRun = 0;
+
+    const $ = (id) => document.getElementById(id);
+
+    function blankApplication(rank) {
+      return {
+        id: Date.now() + rank,
+        rank,
+        college: "",
+        major: "",
+        admissionType: "학생부교과",
+        deadline: "",
+        documents: "",
+        interviewDate: "",
+        csatMinimum: "",
+        scoreNote: "",
+        status: "관심",
+        memo: ""
+      };
+    }
+
+    function createApplicationSet(existing = []) {
+      const normalized = existing.map((item, index) => ({
+        ...blankApplication(index + 1),
+        ...item,
+        rank: index + 1,
+        deadline: item.deadline || item.due || ""
+      }));
+      while (normalized.length < applicationLimit) {
+        normalized.push(blankApplication(normalized.length + 1));
+      }
+      return normalized.slice(0, applicationLimit);
+    }
+
+    function normalizeState(data) {
+      const merged = {
+        ...structuredClone(defaultData),
+        ...(data || {}),
+        config: { ...defaultData.config, ...(data?.config || {}) },
+        students: data?.students || {},
+        notifications: data?.notifications || []
+      };
+      for (const student of Object.values(merged.students)) {
+        student.career = student.career || {};
+        student.careerHistory = student.careerHistory || [];
+        student.tasks = student.tasks || [];
+        student.applications = createApplicationSet(student.applications || []);
+      }
+      return merged;
+    }
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(storeKey) || localStorage.getItem(legacyStoreKey);
+        return normalizeState(saved ? JSON.parse(saved) : defaultData);
+      } catch {
+        return normalizeState(defaultData);
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(storeKey, JSON.stringify(state));
+    }
+
+    function studentKey(name = session.name, number = session.number) {
+      return `${number || "0"}-${name || "guest"}`;
+    }
+
+    function currentStudent() {
+      const key = studentKey();
+      if (!state.students[key]) {
+        state.students[key] = {
+          name: session.name,
+          number: session.number,
+          career: {},
+          careerHistory: [],
+          tasks: [
+            { id: Date.now(), title: "진로 카드 기본 정보 작성", type: "진로", due: "2026-07-03", done: false },
+            { id: Date.now() + 1, title: "희망 대학 10개 후보 입력", type: "원서", due: "2026-07-10", done: false }
+          ],
+          applications: createApplicationSet([
+            { college: "희망 대학 A", major: "관심 학과", admissionType: "학생부교과", deadline: "2026-09-10", status: "검토 중" },
+            { college: "희망 대학 B", major: "관심 학과", admissionType: "학생부종합", deadline: "2026-09-12", status: "자료 필요" }
+          ])
+        };
+        saveState();
+      }
+      state.students[key].applications = createApplicationSet(state.students[key].applications || []);
+      return state.students[key];
+    }
+
+    function formatDate(value) {
+      if (!value) return "날짜 미정";
+      const date = new Date(`${value}T00:00:00`);
+      if (Number.isNaN(date.getTime())) return "날짜 미정";
+      return `${date.getMonth() + 1}/${date.getDate()}`;
+    }
+
+    function daysUntil(value) {
+      if (!value) return 9999;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const target = new Date(`${value}T00:00:00`);
+      if (Number.isNaN(target.getTime())) return 9999;
+      return Math.ceil((target - today) / 86400000);
+    }
+
+    function toast(message) {
+      const box = $("toast");
+      box.textContent = message;
+      box.classList.add("show");
+      window.clearTimeout(toast.timer);
+      toast.timer = window.setTimeout(() => box.classList.remove("show"), 2400);
+    }
+
+    function showTab(id) {
+      if (id === "teacher" && session.role !== "teacher") {
+        toast("교사용 탭은 담임교사 로그인 후 확인할 수 있습니다.");
+        return;
+      }
+      document.querySelectorAll(".screen").forEach((screen) => screen.classList.toggle("active", screen.id === id));
+      document.querySelectorAll(".tab").forEach((tab) => tab.classList.toggle("active", tab.dataset.tab === id));
+      render();
+    }
+
+    function render() {
+      document.body.className = session.role;
+      $("profileName").textContent = session.name ? `${session.name}${session.role === "student" ? ` ${session.number}번` : ""}` : "로그인 전";
+      $("profileRole").textContent = session.role === "teacher" ? "담임교사 화면" : "학생 화면";
+      $("avatar").textContent = session.role === "teacher" ? "담임" : (session.number || "3-2");
+      updateNotificationDot();
+
+      if (!session.name) return;
+      const student = currentStudent();
+      renderHome(student);
+      renderNotices();
+      renderSchedules();
+      renderCareer(student);
+      renderCounsel(student);
+      renderAdmissions(student);
+      renderLibrary();
+      renderTeacher();
+    }
+
+    function renderHome(student) {
+      const upcoming = state.schedules.filter((item) => daysUntil(item.date) >= 0 && daysUntil(item.date) <= 14);
+      const requests = session.role === "teacher" ? state.counselRequests : state.counselRequests.filter((item) => item.key === studentKey());
+      $("metricTasks").textContent = student.tasks.filter((task) => !task.done).length;
+      $("metricApplications").textContent = student.applications.filter((item) => item.college || item.major).length;
+      $("metricCounsel").textContent = requests.length;
+
+      $("todayList").innerHTML = [
+        ...upcoming.slice(0, 3).map((item) => card(`${formatDate(item.date)} ${item.title}`, item.type, `${daysUntil(item.date)}일 남음`)),
+        ...student.applications
+          .filter((item) => item.college && daysUntil(item.deadline) >= 0 && daysUntil(item.deadline) <= 30)
+          .slice(0, 2)
+          .map((item) => card(`${item.college} ${item.major}`, "원서", `${formatDate(item.deadline)} 마감`)),
+        ...state.notices.slice(0, 1).map((item) => card(item.title, "공지", item.body))
+      ].join("") || empty("다가오는 일정이 없습니다.");
+
+      $("taskList").innerHTML = student.tasks
+        .sort((a, b) => (a.due || "").localeCompare(b.due || ""))
+        .map((task) => taskRow(task))
+        .join("") || empty("등록된 할 일이 없습니다.");
+      renderRoleHome(student, upcoming, requests);
+    }
+
+    function renderRoleHome(student, upcoming, requests) {
+      const studentHome = $("studentHomeDashboard");
+      const teacherHome = $("teacherHomeDashboard");
+      studentHome.hidden = session.role === "teacher";
+      teacherHome.hidden = session.role !== "teacher";
+
+      if (session.role === "teacher") {
+        renderTeacherHome();
+        return;
+      }
+
+      renderStudentHome(student, upcoming, requests);
+    }
+
+    function renderStudentHome(student, upcoming, requests) {
+      const openTasks = student.tasks.filter((task) => !task.done);
+      const filledApplications = student.applications.filter((item) => item.college || item.major);
+      const closeApplications = filledApplications
+        .filter((item) => daysUntil(item.deadline) >= 0 && daysUntil(item.deadline) <= 30)
+        .sort((a, b) => daysUntil(a.deadline) - daysUntil(b.deadline));
+      const career = student.career || {};
+      const statusCounts = filledApplications.reduce((acc, item) => {
+        acc[item.status] = (acc[item.status] || 0) + 1;
+        return acc;
+      }, {});
+      const percent = Math.round((filledApplications.length / applicationLimit) * 100);
+
+      $("studentHomeTitle").textContent = `${session.name} 학생의 오늘 준비`;
+      $("studentHomeLead").textContent = `희망대학 ${filledApplications.length}/${applicationLimit}개, 상담 신청 ${requests.length}건, 남은 할 일 ${openTasks.length}개를 확인합니다.`;
+      $("homeTaskBadge").textContent = `${openTasks.length}개 남음`;
+      $("homeTaskBadge").className = `badge ${openTasks.length ? "amber" : "green"}`;
+      $("homeTaskList").innerHTML = student.tasks
+        .slice()
+        .sort((a, b) => Number(a.done) - Number(b.done) || (a.due || "").localeCompare(b.due || ""))
+        .slice(0, 5)
+        .map((task) => taskRow(task))
+        .join("") || empty("등록된 할 일이 없습니다.");
+
+      $("homeCareerSummary").innerHTML = `<div class="summary-grid">
+        ${summaryCell("희망 직업", career.job || "미입력")}
+        ${summaryCell("희망 학과", career.major || "미입력")}
+        ${summaryCell("관심 대학", career.college || "미입력")}
+        ${summaryCell("강점 과목", career.strength || "미입력")}
+      </div>`;
+
+      $("homeApplicationProgress").innerHTML = `
+        <article class="item">
+          <div class="meta"><span class="badge blue">입력 현황</span><span class="badge">${percent}%</span></div>
+          <strong>${filledApplications.length}/${applicationLimit}개 입력 완료</strong>
+          <div class="progress-track" aria-label="희망대학 입력 진행률"><span style="width:${percent}%"></span></div>
+          <p>상향 ${statusCounts["상향"] || 0} · 적정 ${statusCounts["적정"] || 0} · 안정 ${statusCounts["안정"] || 0} · 미입력 ${applicationLimit - filledApplications.length}</p>
+        </article>
+        ${filledApplications.slice(0, 3).map((item) => card(`${item.rank}번 ${item.college || "대학 미입력"}`, item.status || "관심", item.major || "학과 미입력")).join("")}`;
+
+      $("homeDeadlineList").innerHTML = [
+        ...closeApplications.slice(0, 5).map((item) => card(`${formatDate(item.deadline)} ${item.college}`, "원서", `${item.major || "학과 미입력"} · ${daysUntil(item.deadline)}일 남음`)),
+        ...upcoming.slice(0, 3).map((item) => card(`${formatDate(item.date)} ${item.title}`, item.type, `${daysUntil(item.date)}일 남음`))
+      ].join("") || empty("30일 이내 마감 일정이 없습니다.");
+    }
+
+    function renderTeacherHome() {
+      const students = Object.values(state.students)
+        .filter((student) => Number(student.number) > 0)
+        .sort((a, b) => Number(a.number) - Number(b.number));
+      const requests = state.counselRequests.slice().reverse();
+      const pendingRequests = requests.filter((item) => item.status !== "완료");
+      const careerDone = students.filter((student) => hasCareer(student)).length;
+      const applicationDone = students.filter((student) => filledApplicationCount(student) >= applicationLimit).length;
+      const closeDeadlineStudents = students.filter((student) => (student.applications || []).some((item) => item.college && daysUntil(item.deadline) >= 0 && daysUntil(item.deadline) <= 7));
+
+      $("teacherHomeMetrics").innerHTML = [
+        metricCard(`${careerDone}/${students.length}`, "진로카드 작성 완료"),
+        metricCard(`${applicationDone}/${students.length}`, "희망대학 10개 입력 완료"),
+        metricCard(`${pendingRequests.length}건`, "상담 신청 대기"),
+        metricCard(`${closeDeadlineStudents.length}명`, "7일 이내 원서 마감")
+      ].join("");
+
+      $("teacherHomeRequests").innerHTML = requests.slice(0, 5).map((item) => `<article class="item">
+        <div class="meta"><span class="badge violet">${escapeHtml(item.topic)}</span><span class="badge">${formatDate(item.date)}</span><span class="badge amber">${escapeHtml(item.status)}</span></div>
+        <strong>${escapeHtml(item.number)}번 ${escapeHtml(item.studentName)}</strong>
+        <p>${escapeHtml(item.concern)}</p>
+      </article>`).join("") || empty("상담 신청 알림이 없습니다.");
+
+      const warnings = [
+        ...students.filter((student) => !hasCareer(student)).map((student) => warningItem(student, "진로카드 미작성", "진로 탭 입력이 필요합니다.")),
+        ...students.filter((student) => filledApplicationCount(student) < 5).map((student) => warningItem(student, "희망대학 5개 미만", `${filledApplicationCount(student)}/10개 입력`)),
+        ...closeDeadlineStudents.map((student) => warningItem(student, "원서 마감 임박", "7일 이내 마감 원서가 있습니다."))
+      ];
+      $("teacherHomeWarnings").innerHTML = warnings.slice(0, 8).join("") || empty("현재 표시할 주의 학생이 없습니다.");
+
+      $("teacherHomeProgress").innerHTML = `<table class="progress-table">
+        <thead><tr><th>번호</th><th>이름</th><th>진로카드</th><th>희망대학</th><th>상담</th><th>원서상태</th></tr></thead>
+        <tbody>${students.map((student) => {
+          const count = filledApplicationCount(student);
+          const studentRequests = state.counselRequests.filter((item) => item.key === `${student.number}-${student.name}`);
+          return `<tr>
+            <td>${escapeHtml(student.number)}</td>
+            <td>${escapeHtml(student.name)}</td>
+            <td><span class="badge ${hasCareer(student) ? "green" : "amber"}">${hasCareer(student) ? "완료" : "미작성"}</span></td>
+            <td>${count}/${applicationLimit}</td>
+            <td>${studentRequests.length ? `${studentRequests.length}건` : "없음"}</td>
+            <td><span class="badge ${count >= applicationLimit ? "green" : count >= 5 ? "blue" : "amber"}">${count >= applicationLimit ? "완료" : count >= 5 ? "진행" : "점검"}</span></td>
+          </tr>`;
+        }).join("") || `<tr><td colspan="6">아직 등록된 학생 데이터가 없습니다.</td></tr>`}</tbody>
+      </table>`;
+    }
+
+    function summaryCell(label, value) {
+      return `<div class="summary-cell"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`;
+    }
+
+    function metricCard(value, label) {
+      return `<article class="metric"><strong>${escapeHtml(value)}</strong><span>${escapeHtml(label)}</span></article>`;
+    }
+
+    function hasCareer(student) {
+      const career = student.career || {};
+      return Boolean(career.job || career.major || career.college || career.strength);
+    }
+
+    function filledApplicationCount(student) {
+      return createApplicationSet(student.applications || []).filter((item) => item.college || item.major).length;
+    }
+
+    function warningItem(student, title, body) {
+      return `<article class="item"><div class="meta"><span class="badge red">${escapeHtml(title)}</span></div><strong>${escapeHtml(student.number)}번 ${escapeHtml(student.name)}</strong><p>${escapeHtml(body)}</p></article>`;
+    }
+
+    function renderNotices() {
+      $("noticeList").innerHTML = state.notices
+        .slice()
+        .reverse()
+        .map((item) => {
+          const read = item.readBy.includes(studentKey());
+          return `<article class="item">
+            <div class="meta"><span class="badge blue">공지</span><span class="badge">${item.date}</span>${read ? '<span class="badge green">읽음</span>' : ''}</div>
+            <strong>${escapeHtml(item.title)}</strong>
+            <p>${escapeHtml(item.body)}</p>
+            <button class="secondary" type="button" onclick="markNotice(${item.id})">읽음 표시</button>
+          </article>`;
+        })
+        .join("");
+    }
+
+    function renderSchedules() {
+      $("scheduleList").innerHTML = state.schedules
+        .slice()
+        .sort((a, b) => a.date.localeCompare(b.date))
+        .map((item) => card(`${formatDate(item.date)} ${item.title}`, item.type, `${Math.max(daysUntil(item.date), 0)}일 남음`))
+        .join("");
+    }
+
+    function renderCareer(student) {
+      const career = student.career || {};
+      $("careerJob").value = career.job || "";
+      $("careerMajor").value = career.major || "";
+      $("careerCollege").value = career.college || "";
+      $("careerStrength").value = career.strength || "";
+      renderCareerHistory(student);
+    }
+
+    function renderCareerHistory(student) {
+      const history = student.careerHistory || [];
+      $("careerHistoryList").innerHTML = history
+        .slice()
+        .reverse()
+        .map((item, index) => `<article class="item">
+          <div class="meta">
+            <span class="badge green">${escapeHtml(item.savedAt || "저장 시각 미상")}</span>
+            <span class="badge">기록 ${history.length - index}</span>
+          </div>
+          <strong>${escapeHtml(item.job || "희망 직업 미입력")} · ${escapeHtml(item.major || "희망 학과 미입력")}</strong>
+          <p><strong>관심 대학:</strong> ${escapeHtml(item.college || "미입력")}</p>
+          <p><strong>강점 과목:</strong> ${escapeHtml(item.strength || "미입력")}</p>
+          <button class="secondary" type="button" onclick="restoreCareerHistory(${item.id})">이 기록 불러오기</button>
+        </article>`)
+        .join("") || empty("아직 저장된 진로 카드 기록이 없습니다.");
+    }
+
+    function renderCounsel() {
+      const items = state.counselRequests.filter((item) => session.role === "teacher" || item.key === studentKey());
+      $("myCounselList").innerHTML = items
+        .slice()
+        .reverse()
+        .map((item) => `<article class="item">
+          <div class="meta"><span class="badge violet">${escapeHtml(item.topic)}</span><span class="badge">${formatDate(item.date)}</span><span class="badge ${item.status === "접수" ? "amber" : "green"}">${item.status}</span></div>
+          <strong>${escapeHtml(item.studentName)} ${item.number}번</strong>
+          <p>${escapeHtml(item.concern)}</p>
+          ${item.need ? `<p><strong>기대 도움:</strong> ${escapeHtml(item.need)}</p>` : ""}
+        </article>`)
+        .join("") || empty("상담 신청 내역이 없습니다.");
+    }
+
+    function renderAdmissions(student) {
+      const query = $("applicationSearch").value.trim().toLowerCase();
+      const statusFilter = $("applicationStatusFilter").value;
+      const typeFilter = $("applicationTypeFilter").value;
+      const rows = student.applications.filter((item) => {
+        const haystack = `${item.college} ${item.major} ${item.admissionType} ${item.status} ${item.memo}`.toLowerCase();
+        return (!query || haystack.includes(query))
+          && (!statusFilter || item.status === statusFilter)
+          && (!typeFilter || item.admissionType === typeFilter);
+      });
+
+      $("applicationList").innerHTML = rows.map((item) => applicationCard(item)).join("") || empty("검색 조건에 맞는 대학이 없습니다.");
+      renderCatalogResults();
+      renderApplicationInsight(student);
+    }
+
+    function normalizeSearchText(value) {
+      return String(value || "")
+        .toLowerCase()
+        .replace(/\s+/g, "")
+        .replace(/대학교/g, "대")
+        .replace(/학과/g, "")
+        .replace(/학부/g, "")
+        .replace(/전공/g, "");
+    }
+
+    function catalogHaystack(item) {
+      const aliases = [
+        item.college.replace(/대학교$/, "대"),
+        item.major.replace(/학과$/, "").replace(/학부$/, "").replace(/전공$/, "")
+      ];
+      return [item.region, item.college, item.major, item.field, ...aliases]
+        .map((part) => normalizeSearchText(part))
+        .join(" ");
+    }
+
+    function catalogScore(item, rawQuery) {
+      const normalizedQuery = normalizeSearchText(rawQuery);
+      const college = normalizeSearchText(item.college);
+      const major = normalizeSearchText(item.major);
+      let score = 0;
+      if (!normalizedQuery) return 1;
+      if (college === normalizedQuery) score += 100;
+      if (college.startsWith(normalizedQuery)) score += 70;
+      if (major === normalizedQuery) score += 90;
+      if (major.startsWith(normalizedQuery)) score += 65;
+      if (college.includes(normalizedQuery)) score += 45;
+      if (major.includes(normalizedQuery)) score += 45;
+      return score;
+    }
+
+    function applyCatalogFilters(items) {
+      const region = $("catalogRegionFilter").value;
+      const field = $("catalogFieldFilter").value;
+      const collegeQuery = normalizeSearchText($("catalogCollegeFilter").value);
+      return items.filter((item) => {
+        const regionOk = !region || String(item.region || "").includes(region);
+        const fieldOk = !field || String(item.field || "").includes(field);
+        const collegeOk = !collegeQuery || normalizeSearchText(item.college).includes(collegeQuery);
+        return regionOk && fieldOk && collegeOk;
+      });
+    }
+
+    async function renderCatalogResults() {
+      const query = $("catalogSearch").value.trim();
+      const tokens = query.split(/\s+/).filter(Boolean).map(normalizeSearchText);
+      const targetRank = Number($("catalogTargetRank").value || 1);
+      visibleCatalogResults = applyCatalogFilters(majorCatalog)
+        .filter((item) => {
+          const haystack = catalogHaystack(item);
+          return !tokens.length || tokens.every((token) => haystack.includes(token));
+        })
+        .sort((a, b) => catalogScore(b, query) - catalogScore(a, query) || a.college.localeCompare(b.college, "ko") || a.major.localeCompare(b.major, "ko"))
+        .slice(0, 30);
+
+      paintCatalogResults(targetRank, state.config.sheetsUrl && query.length >= 2 ? "커리어넷 API 검색 중입니다." : "");
+
+      if (state.config.sheetsUrl && query.length >= 2) {
+        const run = ++catalogSearchRun;
+        try {
+          const apiResults = await searchCareerNetMajorApi(query);
+          if (run !== catalogSearchRun) return;
+          if (apiResults.length) {
+            visibleCatalogResults = applyCatalogFilters(apiResults)
+              .sort((a, b) => catalogScore(b, query) - catalogScore(a, query) || a.college.localeCompare(b.college, "ko") || a.major.localeCompare(b.major, "ko"));
+            paintCatalogResults(targetRank, "커리어넷 API 결과입니다.");
+          } else {
+            paintCatalogResults(targetRank, "API 결과가 없어 앱 기본 목록을 보여줍니다.");
+          }
+        } catch (error) {
+          if (run !== catalogSearchRun) return;
+          paintCatalogResults(targetRank, `API 검색에 실패해 기본 목록을 보여줍니다. ${error.message}`);
+        }
+      }
+    }
+
+    function paintCatalogResults(targetRank, message = "") {
+      const messageHtml = message ? `<article class="item"><p>${escapeHtml(message)}</p></article>` : "";
+      $("catalogResults").innerHTML = messageHtml + (visibleCatalogResults.map((item, index) => `<article class="catalog-result">
+        <div>
+          <strong>${escapeHtml(item.college)} · ${escapeHtml(item.major)}</strong>
+          <span>${escapeHtml(item.region || "지역 미상")} · ${escapeHtml(item.field || "계열 미상")}${item.source ? ` · ${escapeHtml(item.source)}` : ""}</span>
+        </div>
+        <button class="primary" type="button" onclick="pickMajor(${targetRank}, ${index})">넣기</button>
+      </article>`).join("") || empty("검색 결과가 없습니다. 대학명이나 학과명을 원서 카드에 직접 입력할 수 있습니다."));
+    }
+
+    function searchCareerNetMajorApi(query) {
+      return new Promise((resolve, reject) => {
+        const baseUrl = state.config.sheetsUrl;
+        if (!baseUrl) {
+          resolve([]);
+          return;
+        }
+        const callbackName = `careerNetMajorCallback_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+        const script = document.createElement("script");
+        const sep = baseUrl.includes("?") ? "&" : "?";
+        const timer = window.setTimeout(() => {
+          cleanup();
+          reject(new Error("응답 시간 초과"));
+        }, 12000);
+
+        function cleanup() {
+          window.clearTimeout(timer);
+          delete window[callbackName];
+          script.remove();
+        }
+
+        window[callbackName] = (data) => {
+          cleanup();
+          if (!data || data.ok === false) {
+            reject(new Error(data?.message || "API 응답 오류"));
+            return;
+          }
+          resolve((data.results || []).map((item) => ({
+            college: item.college || item.schoolName || "",
+            major: item.major || item.majorName || "",
+            region: item.region || item.area || "",
+            field: item.field || item.lClass || "",
+            source: "API"
+          })).filter((item) => item.college && item.major));
+        };
+
+        script.onerror = () => {
+          cleanup();
+          reject(new Error("API 스크립트 로드 실패"));
+        };
+        script.src = `${baseUrl}${sep}action=major_search&q=${encodeURIComponent(query)}&callback=${encodeURIComponent(callbackName)}`;
+        document.body.appendChild(script);
+      });
+    }
+
+    function applicationCard(item) {
+      return `<article class="application-card" data-application-id="${item.id}">
+        <div class="application-summary">
+          <div class="rank">${item.rank}</div>
+          <div class="application-title">
+            <strong>${escapeHtml(item.college || `희망대학 ${item.rank}`)} ${item.major ? `· ${escapeHtml(item.major)}` : ""}</strong>
+            <span>${escapeHtml(item.admissionType)} · ${escapeHtml(item.status)} · ${formatDate(item.deadline)} 마감</span>
+          </div>
+          <div class="head-actions">
+            <button class="secondary" type="button" onclick="focusCatalog(${item.rank})">검색해서 넣기</button>
+            <button class="secondary" type="button" onclick="createTaskFromApplication(${item.id})">할 일 만들기</button>
+          </div>
+        </div>
+        <div class="application-fields">
+          <label>대학명 <input data-field="college" value="${escapeAttr(item.college)}" placeholder="예: 한국대학교"></label>
+          <label>관심 학과 <input data-field="major" value="${escapeAttr(item.major)}" placeholder="예: 통계학과"></label>
+          <label>전형
+            <select data-field="admissionType">
+              ${optionList(["학생부교과", "학생부종합", "논술", "실기/실적", "정시", "기타"], item.admissionType)}
+            </select>
+          </label>
+          <label>지원 상태
+            <select data-field="status">
+              ${optionList(["관심", "검토 중", "상향", "적정", "안정", "자료 필요", "제출 완료"], item.status)}
+            </select>
+          </label>
+          <label>원서 마감 <input data-field="deadline" type="date" value="${escapeAttr(item.deadline)}"></label>
+        </div>
+      </article>`;
+    }
+
+    function renderApplicationInsight(student) {
+      const filled = student.applications.filter((item) => item.college || item.major);
+      const statusCounts = filled.reduce((acc, item) => {
+        acc[item.status] = (acc[item.status] || 0) + 1;
+        return acc;
+      }, {});
+      const closeDeadlines = filled.filter((item) => daysUntil(item.deadline) >= 0 && daysUntil(item.deadline) <= 30);
+      $("applicationInsight").innerHTML = [
+        card(`입력 ${filled.length}/10개`, "현황", filled.length < 10 ? "희망대학 후보를 더 채워 상담 선택지를 넓혀 보세요." : "10개 후보가 모두 입력되었습니다."),
+        card(`상향 ${statusCounts["상향"] || 0} · 적정 ${statusCounts["적정"] || 0} · 안정 ${statusCounts["안정"] || 0}`, "균형", "상향, 적정, 안정 지원의 균형을 상담 때 함께 점검합니다."),
+        closeDeadlines.length ? card(`${closeDeadlines.length}개 마감 임박`, "마감", closeDeadlines.map((item) => `${item.college} ${formatDate(item.deadline)}`).join(", ")) : card("마감 임박 없음", "마감", "30일 이내 마감 원서가 없습니다.")
+      ].join("");
+    }
+
+    function renderLibrary() {
+      $("libraryList").innerHTML = state.library.map((item) => card(item.title, item.tag, item.body)).join("");
+    }
+
+    function renderTeacher() {
+      if (session.role !== "teacher") return;
+      const students = Object.values(state.students).sort((a, b) => Number(a.number) - Number(b.number));
+      $("recordStudent").innerHTML = students.map((student) => `<option value="${student.number}-${student.name}">${student.number}번 ${escapeHtml(student.name)}</option>`).join("");
+      $("sheetsUrl").value = state.config.sheetsUrl || "";
+      $("teacherEmail").value = state.config.teacherEmail || "";
+      $("lastSync").value = state.config.lastSync || "아직 동기화 전";
+      $("syncBadge").textContent = state.config.sheetsUrl ? "설정됨" : "미설정";
+      $("syncBadge").className = `badge ${state.config.sheetsUrl ? "green" : ""}`;
+
+      const requestItems = state.counselRequests.slice().reverse().map((item) => `<article class="item">
+        <div class="meta"><span class="badge violet">${escapeHtml(item.topic)}</span><span class="badge">${formatDate(item.date)}</span><span class="badge amber">${item.status}</span></div>
+        <strong>${item.number}번 ${escapeHtml(item.studentName)}</strong>
+        <p>${escapeHtml(item.concern)}</p>
+      </article>`).join("");
+      const recordItems = state.records.slice().reverse().map((item) => `<article class="item">
+        <div class="meta"><span class="badge green">교사용 기록</span><span class="badge">${item.date}</span></div>
+        <strong>${escapeHtml(item.studentLabel)}</strong>
+        <p>${escapeHtml(item.memo)}</p>
+        <p><strong>다음 조치:</strong> ${escapeHtml(item.next)}</p>
+      </article>`).join("");
+      $("teacherDashboard").innerHTML = requestItems + recordItems || empty("아직 상담 신청이나 기록이 없습니다.");
+      renderNotifications();
+    }
+
+    function renderNotifications() {
+      $("notificationList").innerHTML = state.notifications
+        .slice()
+        .reverse()
+        .map((item) => `<article class="item">
+          <div class="meta"><span class="badge ${item.read ? "green" : "red"}">${item.read ? "확인" : "새 알림"}</span><span class="badge">${item.date}</span></div>
+          <strong>${escapeHtml(item.title)}</strong>
+          <p>${escapeHtml(item.body)}</p>
+        </article>`)
+        .join("") || empty("새 알림이 없습니다.");
+    }
+
+    function updateNotificationDot() {
+      const unread = state.notifications.filter((item) => !item.read).length;
+      $("notificationDot").textContent = unread;
+      $("notificationDot").classList.toggle("has-new", unread > 0);
+    }
+
+    function card(title, tag, body) {
+      return `<article class="item"><div class="meta"><span class="badge">${escapeHtml(tag)}</span></div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(body)}</p></article>`;
+    }
+
+    function taskRow(task) {
+      return `<div class="task-row ${task.done ? "done" : ""}">
+        <input type="checkbox" ${task.done ? "checked" : ""} onchange="toggleTask(${task.id})" aria-label="할 일 완료">
+        <div class="task-text"><strong>${escapeHtml(task.title)}</strong><small>${escapeHtml(task.type)} · ${formatDate(task.due)} 마감</small></div>
+        <span class="badge ${task.done ? "green" : "amber"}">${task.done ? "완료" : "진행"}</span>
+      </div>`;
+    }
+
+    function empty(message) {
+      return `<article class="item"><p>${escapeHtml(message)}</p></article>`;
+    }
+
+    function optionList(options, selected) {
+      return options.map((option) => `<option ${option === selected ? "selected" : ""}>${escapeHtml(option)}</option>`).join("");
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[char]));
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value).replace(/`/g, "&#096;");
+    }
+
+    function collectApplicationInputs() {
+      const student = currentStudent();
+      document.querySelectorAll(".application-card").forEach((cardEl) => {
+        const id = Number(cardEl.dataset.applicationId);
+        const app = student.applications.find((item) => item.id === id);
+        if (!app) return;
+        cardEl.querySelectorAll("[data-field]").forEach((field) => {
+          app[field.dataset.field] = field.value.trim();
+        });
+      });
+    }
+
+    async function syncToSheets(action, payload) {
+      if (!state.config.sheetsUrl) return false;
+      const body = {
+        action,
+        teacherEmail: state.config.teacherEmail,
+        createdAt: new Date().toISOString(),
+        payload
+      };
+      try {
+        await fetch(state.config.sheetsUrl, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(body)
+        });
+        state.config.lastSync = new Date().toLocaleString("ko-KR");
+        saveState();
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    async function notifyTeacher(request) {
+      const notification = {
+        id: Date.now(),
+        type: "counsel",
+        title: `${request.number}번 ${request.studentName} 상담 신청`,
+        body: `${request.topic}: ${request.concern}`,
+        date: new Date().toLocaleString("ko-KR"),
+        read: false
+      };
+      state.notifications.push(notification);
+      saveState();
+      updateNotificationDot();
+
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification(notification.title, { body: notification.body });
+      }
+
+      await syncToSheets("counsel_request", { request, notification });
+    }
+
+    window.markNotice = (id) => {
+      const notice = state.notices.find((item) => item.id === id);
+      if (notice && !notice.readBy.includes(studentKey())) {
+        notice.readBy.push(studentKey());
+        saveState();
+        render();
+        toast("읽음으로 표시했습니다.");
+      }
+    };
+
+    window.toggleTask = (id) => {
+      const student = currentStudent();
+      const task = student.tasks.find((item) => item.id === id);
+      if (task) {
+        task.done = !task.done;
+        saveState();
+        render();
+      }
+    };
+
+    window.focusCatalog = (rank) => {
+      $("catalogTargetRank").value = String(rank);
+      $("catalogSearch").focus();
+      toast(`${rank}번에 넣을 대학·학과를 검색하세요.`);
+    };
+
+    window.pickMajor = (rank, resultIndex) => {
+      collectApplicationInputs();
+      const selected = visibleCatalogResults[resultIndex];
+      const student = currentStudent();
+      const app = student.applications.find((item) => item.rank === rank);
+      if (!selected || !app) return;
+      app.college = selected.college;
+      app.major = selected.major;
+      app.region = selected.region;
+      app.field = selected.field;
+      saveState();
+      renderAdmissions(student);
+      toast(`${rank}번에 ${selected.college} ${selected.major}를 넣었습니다.`);
+    };
+
+    window.createTaskFromApplication = (id) => {
+      collectApplicationInputs();
+      const student = currentStudent();
+      const app = student.applications.find((item) => item.id === id);
+      if (!app) return;
+      student.tasks.push({
+        id: Date.now(),
+        title: `${app.college || "희망대학"} ${app.major || ""} 전형 확인`,
+        type: "원서",
+        due: app.deadline || "",
+        done: false
+      });
+      saveState();
+      render();
+      toast("원서 관련 할 일을 만들었습니다.");
+    };
+
+    window.restoreCareerHistory = (id) => {
+      const student = currentStudent();
+      const item = (student.careerHistory || []).find((entry) => entry.id === id);
+      if (!item) return;
+      student.career = {
+        job: item.job || "",
+        major: item.major || "",
+        college: item.college || "",
+        strength: item.strength || ""
+      };
+      saveState();
+      renderCareer(student);
+      toast("선택한 진로 카드 기록을 불러왔습니다.");
+    };
+
+    document.querySelectorAll(".tab").forEach((button) => button.addEventListener("click", () => showTab(button.dataset.tab)));
+    document.querySelectorAll("[data-tab-jump]").forEach((button) => button.addEventListener("click", () => showTab(button.dataset.tabJump)));
+    ["applicationSearch", "applicationStatusFilter", "applicationTypeFilter"].forEach((id) => $(id).addEventListener("input", () => renderAdmissions(currentStudent())));
+    $("catalogSearch").addEventListener("input", () => {
+      window.clearTimeout(catalogSearchTimer);
+      catalogSearchTimer = window.setTimeout(() => renderCatalogResults(), 280);
+    });
+    $("catalogTargetRank").addEventListener("change", () => renderCatalogResults());
+    ["catalogRegionFilter", "catalogFieldFilter"].forEach((id) => $(id).addEventListener("change", () => renderCatalogResults()));
+    $("catalogCollegeFilter").addEventListener("input", () => {
+      window.clearTimeout(catalogSearchTimer);
+      catalogSearchTimer = window.setTimeout(() => renderCatalogResults(), 180);
+    });
+    $("applicationList").addEventListener("input", () => {
+      collectApplicationInputs();
+      saveState();
+      renderApplicationInsight(currentStudent());
+    });
+
+    function enterApp(role, name, number = "") {
+      session = { role, name, number };
+      $("login").style.display = "none";
+      render();
+      showTab("home");
+      toast(`${role === "teacher" ? "교사" : "학생"} 화면으로 입장했습니다.`);
+    }
+
+    $("teacherLoginToggleBtn").addEventListener("click", () => {
+      $("teacherLoginPanel").hidden = !$("teacherLoginPanel").hidden;
+      $("modeTeacher").checked = !$("teacherLoginPanel").hidden;
+      $("modeStudent").checked = $("teacherLoginPanel").hidden;
+      $("teacherLoginToggleBtn").textContent = $("teacherLoginPanel").hidden ? "교사용 로그인" : "교사용 로그인 닫기";
+    });
+
+    $("loginBtn").addEventListener("click", () => {
+      $("modeStudent").checked = true;
+      $("modeTeacher").checked = false;
+      const name = $("loginName").value.trim();
+      const number = $("loginNumber").value.trim();
+      if (!name || !number) {
+        toast("학생은 이름과 번호를 입력해야 합니다.");
+        return;
+      }
+      if ($("classCode").value.trim() !== studentClassCode) {
+        toast("학급코드를 확인해 주세요.");
+        return;
+      }
+      enterApp("student", name, number);
+    });
+
+    $("teacherLoginBtn").addEventListener("click", () => {
+      $("modeTeacher").checked = true;
+      $("modeStudent").checked = false;
+      const name = $("teacherName").value.trim() || "담임교사";
+      if ($("teacherPin").value !== teacherPin) {
+        toast("교사용 비밀번호를 확인해 주세요.");
+        return;
+      }
+      enterApp("teacher", name);
+    });
+
+    $("logoutBtn").addEventListener("click", () => {
+      $("login").style.display = "grid";
+      $("teacherPin").value = "";
+      $("teacherName").value = "";
+      $("teacherLoginPanel").hidden = true;
+      $("teacherLoginToggleBtn").textContent = "교사용 로그인";
+      $("modeStudent").checked = true;
+      $("modeTeacher").checked = false;
+    });
+
+    $("saveCareerBtn").addEventListener("click", async () => {
+      const student = currentStudent();
+      const careerSnapshot = {
+        id: Date.now(),
+        savedAt: new Date().toLocaleString("ko-KR"),
+        job: $("careerJob").value.trim(),
+        major: $("careerMajor").value.trim(),
+        college: $("careerCollege").value.trim(),
+        strength: $("careerStrength").value.trim()
+      };
+      student.career = {
+        job: careerSnapshot.job,
+        major: careerSnapshot.major,
+        college: careerSnapshot.college,
+        strength: careerSnapshot.strength
+      };
+      student.careerHistory = student.careerHistory || [];
+      student.careerHistory.push(careerSnapshot);
+      saveState();
+      await syncToSheets("career_update", { studentKey: studentKey(), student, careerSnapshot });
+      renderCareerHistory(student);
+      toast("진로 카드를 저장하고 누적 기록에 추가했습니다.");
+    });
+
+    $("restoreLatestCareerBtn").addEventListener("click", () => {
+      const student = currentStudent();
+      const latest = (student.careerHistory || [])[student.careerHistory.length - 1];
+      if (!latest) {
+        toast("불러올 진로 카드 기록이 없습니다.");
+        return;
+      }
+      window.restoreCareerHistory(latest.id);
+    });
+
+    $("clearCareerHistoryBtn").addEventListener("click", () => {
+      const student = currentStudent();
+      student.careerHistory = [];
+      saveState();
+      renderCareerHistory(student);
+      toast("이 브라우저에 저장된 진로 카드 누적 기록을 정리했습니다.");
+    });
+
+    $("requestCounselBtn").addEventListener("click", async () => {
+      if (!$("counselConcern").value.trim()) {
+        toast("상담 고민 내용을 입력해 주세요.");
+        return;
+      }
+      const request = {
+        id: Date.now(),
+        key: studentKey(),
+        studentName: session.name,
+        number: session.number,
+        date: $("counselDate").value,
+        topic: $("counselTopic").value,
+        concern: $("counselConcern").value.trim(),
+        need: $("counselNeed").value.trim(),
+        status: "접수"
+      };
+      state.counselRequests.push(request);
+      $("counselConcern").value = "";
+      $("counselNeed").value = "";
+      saveState();
+      await notifyTeacher(request);
+      render();
+      toast("상담 신청이 접수되었고 교사용 알림에 등록되었습니다.");
+    });
+
+    $("saveApplicationsBtn").addEventListener("click", async () => {
+      collectApplicationInputs();
+      const student = currentStudent();
+      saveState();
+      await syncToSheets("applications_update", { studentKey: studentKey(), studentName: student.name, number: student.number, applications: student.applications });
+      render();
+      toast("희망대학 10개 원서표를 저장했습니다.");
+    });
+
+    $("addTaskBtn").addEventListener("click", () => {
+      if (!$("taskTitle").value.trim()) {
+        toast("할 일을 입력해 주세요.");
+        return;
+      }
+      currentStudent().tasks.push({
+        id: Date.now(),
+        title: $("taskTitle").value.trim(),
+        type: $("taskType").value,
+        due: $("taskDue").value,
+        done: false
+      });
+      $("taskTitle").value = "";
+      saveState();
+      render();
+      toast("개인 할 일을 추가했습니다.");
+    });
+
+    $("addNoticeBtn").addEventListener("click", async () => {
+      if (!$("noticeTitle").value.trim() || session.role !== "teacher") return;
+      const notice = {
+        id: Date.now(),
+        title: $("noticeTitle").value.trim(),
+        body: $("noticeBody").value.trim(),
+        date: new Date().toISOString().slice(0, 10),
+        readBy: []
+      };
+      state.notices.push(notice);
+      $("noticeTitle").value = "";
+      $("noticeBody").value = "";
+      saveState();
+      await syncToSheets("notice_create", { notice });
+      render();
+      toast("공지를 등록했습니다.");
+    });
+
+    $("addScheduleBtn").addEventListener("click", async () => {
+      if (!$("scheduleDate").value || !$("scheduleTitle").value.trim() || session.role !== "teacher") return;
+      const schedule = {
+        id: Date.now(),
+        date: $("scheduleDate").value,
+        type: $("scheduleType").value,
+        title: $("scheduleTitle").value.trim()
+      };
+      state.schedules.push(schedule);
+      $("scheduleTitle").value = "";
+      saveState();
+      await syncToSheets("schedule_create", { schedule });
+      render();
+      toast("일정을 추가했습니다.");
+    });
+
+    $("saveRecordBtn").addEventListener("click", async () => {
+      if (session.role !== "teacher" || !$("recordMemo").value.trim()) {
+        toast("상담 메모를 입력해 주세요.");
+        return;
+      }
+      const record = {
+        id: Date.now(),
+        studentLabel: $("recordStudent").value || "학생 미선택",
+        memo: $("recordMemo").value.trim(),
+        next: $("recordNext").value.trim(),
+        date: new Date().toISOString().slice(0, 10)
+      };
+      state.records.push(record);
+      $("recordMemo").value = "";
+      $("recordNext").value = "";
+      saveState();
+      await syncToSheets("counsel_record", { record });
+      render();
+      toast("교사용 상담 기록을 저장했습니다.");
+    });
+
+    $("enableNotifyBtn").addEventListener("click", async () => {
+      if (!("Notification" in window)) {
+        toast("이 브라우저는 알림을 지원하지 않습니다.");
+        return;
+      }
+      const permission = await Notification.requestPermission();
+      toast(permission === "granted" ? "브라우저 알림이 켜졌습니다." : "브라우저 알림 권한이 허용되지 않았습니다.");
+    });
+
+    $("saveSheetsConfigBtn").addEventListener("click", () => {
+      state.config.sheetsUrl = $("sheetsUrl").value.trim();
+      state.config.teacherEmail = $("teacherEmail").value.trim();
+      saveState();
+      render();
+      toast("Google Sheets 연동 설정을 저장했습니다.");
+    });
+
+    $("exportSheetsBtn").addEventListener("click", async () => {
+      collectApplicationInputs();
+      saveState();
+      const ok = await syncToSheets("full_export", state);
+      render();
+      toast(ok ? "현재 데이터를 Google Sheets로 전송했습니다." : "Sheets URL을 먼저 설정해 주세요.");
+    });
+
+    $("markNotificationsReadBtn").addEventListener("click", () => {
+      state.notifications.forEach((item) => item.read = true);
+      saveState();
+      render();
+      toast("알림을 모두 확인 처리했습니다.");
+    });
+  </script>
+</body>
+</html>
