@@ -166,12 +166,17 @@
     .app {
       position: relative;
       z-index: 1;
+      display: grid;
+      grid-template-columns: 176px minmax(0, 1fr);
+      gap: 16px 18px;
+      align-items: start;
       width: min(1240px, 100%);
       margin: 0 auto;
       padding: 22px 22px 96px;
     }
 
     .topbar {
+      grid-column: 1 / -1;
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 16px;
@@ -230,15 +235,25 @@
     }
 
     .nav {
+      position: sticky;
+      top: 18px;
+      grid-column: 1;
       display: grid;
-      grid-template-columns: repeat(8, minmax(78px, 1fr));
+      grid-template-columns: 1fr;
       gap: 8px;
-      margin-bottom: 16px;
+      margin: 0;
+      padding: 10px;
+      border: 1px solid rgba(195, 208, 198, 0.92);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
     }
 
     .tab {
-      display: grid;
-      place-items: center;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
       min-height: 52px;
       border: 1px solid rgba(195, 208, 198, 0.9);
       border-radius: 8px;
@@ -246,6 +261,8 @@
       background: rgba(255, 255, 255, 0.86);
       font-weight: 900;
       box-shadow: 0 10px 22px rgba(32, 55, 49, 0.06);
+      padding: 12px 14px;
+      text-align: left;
     }
 
     .tab.active {
@@ -255,6 +272,8 @@
     }
 
     .screen {
+      grid-column: 2;
+      min-width: 0;
       display: none;
     }
 
@@ -711,7 +730,7 @@
     }
 
     body.teacher .tab.teacher-only {
-      display: grid;
+      display: flex;
     }
 
     body.teacher .screen.teacher-only {
@@ -882,7 +901,14 @@
       }
 
       .app {
+        display: block;
         padding: 16px 14px 90px;
+      }
+
+      .topbar,
+      .nav,
+      .screen {
+        grid-column: auto;
       }
 
       .topbar,
@@ -932,6 +958,7 @@
 
       .nav {
         position: fixed;
+        top: auto;
         left: 0;
         right: 0;
         bottom: 0;
@@ -939,17 +966,25 @@
         grid-template-columns: repeat(4, 1fr);
         gap: 0;
         margin: 0;
+        padding: 0;
         border-top: 1px solid var(--line);
+        border-right: 0;
+        border-bottom: 0;
+        border-left: 0;
+        border-radius: 0;
         background: rgba(255, 255, 255, 0.96);
         box-shadow: 0 -12px 26px rgba(23, 32, 51, 0.1);
       }
 
       .tab {
+        justify-content: center;
         min-height: 58px;
         border-width: 0 1px 0 0;
         border-radius: 0;
         box-shadow: none;
         font-size: 12px;
+        padding: 9px 6px;
+        text-align: center;
       }
 
       .panel-head {
