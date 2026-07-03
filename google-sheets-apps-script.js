@@ -229,9 +229,10 @@ function appendRawLog_(ss, action, data) {
 }
 
 function appendCounselRequest_(ss, request) {
-  const sheet = getSheet_(ss, "상담신청", ["접수시각", "번호", "이름", "희망일", "주제", "고민", "기대 도움", "상태"]);
+  const sheet = getSheet_(ss, "상담신청", ["접수시각", "studentKey", "번호", "이름", "희망일", "주제", "고민", "기대 도움", "상태"]);
   sheet.appendRow([
     new Date(),
+    request.key,
     request.number,
     request.studentName,
     request.date,
@@ -243,10 +244,11 @@ function appendCounselRequest_(ss, request) {
 }
 
 function upsertApplications_(ss, payload) {
-  const sheet = getSheet_(ss, "원서관리", ["저장시각", "번호", "이름", "순위", "대학", "학과", "전형", "마감", "면접", "서류", "최저", "상태", "성적메모", "상담메모"]);
+  const sheet = getSheet_(ss, "원서관리", ["저장시각", "studentKey", "번호", "이름", "순위", "대학", "학과", "전형", "마감", "면접", "서류", "최저", "상태", "성적메모", "상담메모"]);
   payload.applications.forEach((app) => {
     sheet.appendRow([
       new Date(),
+      payload.studentKey,
       payload.number,
       payload.studentName,
       app.rank,
@@ -267,9 +269,10 @@ function upsertApplications_(ss, payload) {
 function appendCareer_(ss, payload) {
   const student = payload.student || {};
   const career = payload.careerSnapshot || student.career || {};
-  const sheet = getSheet_(ss, "진로카드", ["저장시각", "번호", "이름", "직업", "학과", "대학", "강점"]);
+  const sheet = getSheet_(ss, "진로카드", ["저장시각", "studentKey", "번호", "이름", "직업", "학과", "대학", "강점"]);
   sheet.appendRow([
     career.savedAt || new Date(),
+    payload.studentKey || student.studentKey,
     student.number,
     student.name,
     career.job,

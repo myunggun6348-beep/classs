@@ -1534,6 +1534,7 @@
     const legacyStoreKey = "class32-career-app-v1";
     const teacherPin = "20302";
     const studentClassCode = "32";
+    const classId = "class32";
     const applicationLimit = 10;
     const majorCatalog = [
       { region: "서울", college: "서울대학교", major: "경제학부", field: "사회" },
@@ -1645,6 +1646,105 @@
       return normalized.slice(0, applicationLimit);
     }
 
+    function normalizeStudentName(value) {
+      return String(value || "")
+        .trim()
+        .replace(/\s+/g, "")
+        .replace(/학생$/u, "");
+    }
+
+    function normalizeStudentNumber(value) {
+      const digits = String(value || "").replace(/\D/g, "");
+      if (!digits) return "";
+      const number = Number(digits);
+      return Number.isFinite(number) && number > 0 ? String(number) : "";
+    }
+
+    function canonicalStudentKey(number) {
+      const normalizedNumber = normalizeStudentNumber(number);
+      return normalizedNumber ? `${classId}-${normalizedNumber.padStart(2, "0")}` : `${classId}-guest`;
+    }
+
+    function canonicalizeStoredKey(key, student = {}) {
+      if (String(key || "").startsWith(`${classId}-`)) return key;
+      const number = normalizeStudentNumber(student.number || String(key || "").split("-")[0]);
+      return canonicalStudentKey(number);
+    }
+
+    function mergeUniqueById(target = [], source = []) {
+      const byId = new Map();
+      [...target, ...source].forEach((item) => {
+        if (!item) return;
+        const id = item.id || `${item.title || item.savedAt || item.date || ""}-${JSON.stringify(item)}`;
+        if (!byId.has(id)) byId.set(id, item);
+      });
+      return [...byId.values()];
+    }
+
+    function mergeApplications(target = [], source = []) {
+      const merged = createApplicationSet(target);
+      createApplicationSet(source).forEach((sourceApp) => {
+        const targetApp = merged.find((item) => item.rank === sourceApp.rank);
+        if (!targetApp) return;
+        const targetFilled = targetApp.college || targetApp.major;
+        const sourceFilled = sourceApp.college || sourceApp.major;
+        if (!targetFilled && sourceFilled) {
+          Object.assign(targetApp, { ...sourceApp, id: targetApp.id, rank: targetApp.rank });
+        }
+      });
+      return createApplicationSet(merged);
+    }
+
+    function mergeStudentRecord(target = {}, source = {}) {
+      return {
+        ...target,
+        ...source,
+        name: normalizeStudentName(target.name || source.name),
+        number: normalizeStudentNumber(target.number || source.number),
+        career: Object.keys(target.career || {}).length ? target.career : (source.career || {}),
+        careerHistory: mergeUniqueById(target.careerHistory, source.careerHistory),
+        tasks: mergeUniqueById(target.tasks, source.tasks),
+        applications: mergeApplications(target.applications, source.applications)
+      };
+    }
+
+    function migrateStudentData(data) {
+      const migratedStudents = {};
+      const keyMap = {};
+
+      Object.entries(data.students || {}).forEach(([oldKey, rawStudent]) => {
+        const student = {
+          ...rawStudent,
+          name: normalizeStudentName(rawStudent.name || String(oldKey).split("-").slice(1).join("-")),
+          number: normalizeStudentNumber(rawStudent.number || String(oldKey).split("-")[0])
+        };
+        const newKey = canonicalizeStoredKey(oldKey, student);
+        keyMap[oldKey] = newKey;
+        student.studentKey = newKey;
+        migratedStudents[newKey] = migratedStudents[newKey]
+          ? mergeStudentRecord(migratedStudents[newKey], student)
+          : mergeStudentRecord({}, student);
+        migratedStudents[newKey].studentKey = newKey;
+      });
+
+      data.students = migratedStudents;
+      data.counselRequests = (data.counselRequests || []).map((request) => {
+        const number = normalizeStudentNumber(request.number);
+        const studentName = normalizeStudentName(request.studentName);
+        return {
+          ...request,
+          key: number ? canonicalStudentKey(number) : (keyMap[request.key] || request.key),
+          studentName,
+          number
+        };
+      });
+      data.notices = (data.notices || []).map((notice) => ({
+        ...notice,
+        readBy: [...new Set((notice.readBy || []).map((key) => keyMap[key] || canonicalizeStoredKey(key)))]
+      }));
+      return data;
+    }
+
     function normalizeState(data) {
       const merged = {
         ...structuredClone(defaultData),
@@ -1653,7 +1753,11 @@
         students: data?.students || {},
         notifications: data?.notifications || []
       };
+      migrateStudentData(merged);
       for (const student of Object.values(merged.students)) {
+        student.name = normalizeStudentName(student.name);
+        student.number = normalizeStudentNumber(student.number);
+        student.studentKey = student.studentKey || canonicalStudentKey(student.number);
         student.career = student.career || {};
         student.careerHistory = student.careerHistory || [];
         student.tasks = student.tasks || [];
@@ -1676,15 +1780,16 @@
     }
 
     function studentKey(name = session.name, number = session.number) {
-      return `${number || "0"}-${name || "guest"}`;
+      return canonicalStudentKey(number);
     }
 
     function currentStudent() {
       const key = studentKey();
       if (!state.students[key]) {
         state.students[key] = {
-          name: session.name,
-          number: session.number,
+          studentKey: key,
+          name: normalizeStudentName(session.name),
+          number: normalizeStudentNumber(session.number),
           career: {},
           careerHistory: [],
           tasks: [
@@ -1698,6 +1803,9 @@
         };
         saveState();
       }
+      state.students[key].studentKey = key;
+      state.students[key].name = normalizeStudentName(session.name || state.students[key].name);
+      state.students[key].number = normalizeStudentNumber(session.number || state.students[key].number);
       state.students[key].applications = createApplicationSet(state.students[key].applications || []);
       return state.students[key];
     }
@@ -1744,7 +1852,7 @@
       updateNotificationDot();
 
       if (!session.name) return;
-      const student = currentStudent();
+      const student = session.role === "teacher" ? emptyStudentView() : currentStudent();
       renderHome(student);
       renderNotices();
       renderSchedules();
@@ -1753,6 +1861,18 @@
       renderAdmissions(student);
       renderLibrary();
       renderTeacher();
+    }
+
+    function emptyStudentView() {
+      return {
+        studentKey: "",
+        name: "",
+        number: "",
+        career: {},
+        careerHistory: [],
+        tasks: [],
+        applications: createApplicationSet([])
+      };
     }
 
     function renderHome(student) {
@@ -1872,7 +1992,7 @@
         <thead><tr><th>번호</th><th>이름</th><th>진로카드</th><th>희망대학</th><th>상담</th><th>원서상태</th></tr></thead>
         <tbody>${students.map((student) => {
           const count = filledApplicationCount(student);
-          const studentRequests = state.counselRequests.filter((item) => item.key === `${student.number}-${student.name}`);
+          const studentRequests = state.counselRequests.filter((item) => item.key === student.studentKey);
           return `<tr>
             <td>${escapeHtml(student.number)}</td>
             <td>${escapeHtml(student.name)}</td>
@@ -2174,8 +2294,10 @@
 
     function renderTeacher() {
       if (session.role !== "teacher") return;
-      const students = Object.values(state.students).sort((a, b) => Number(a.number) - Number(b.number));
-      $("recordStudent").innerHTML = students.map((student) => `<option value="${student.number}-${student.name}">${student.number}번 ${escapeHtml(student.name)}</option>`).join("");
+      const students = Object.values(state.students)
+        .filter((student) => Number(student.number) > 0)
+        .sort((a, b) => Number(a.number) - Number(b.number));
+      $("recordStudent").innerHTML = students.map((student) => `<option value="${student.studentKey}">${student.number}번 ${escapeHtml(student.name)}</option>`).join("");
       $("sheetsUrl").value = state.config.sheetsUrl || "";
       $("teacherEmail").value = state.config.teacherEmail || "";
       $("lastSync").value = state.config.lastSync || "아직 동기화 전";
@@ -2391,7 +2513,11 @@
     });
 
     function enterApp(role, name, number = "") {
-      session = { role, name, number };
+      session = {
+        role,
+        name: role === "student" ? normalizeStudentName(name) : name.trim(),
+        number: normalizeStudentNumber(number)
+      };
       $("login").style.display = "none";
       render();
       showTab("home");
@@ -2408,8 +2534,8 @@
     $("loginBtn").addEventListener("click", () => {
       $("modeStudent").checked = true;
       $("modeTeacher").checked = false;
-      const name = $("loginName").value.trim();
-      const number = $("loginNumber").value.trim();
+      const name = normalizeStudentName($("loginName").value);
+      const number = normalizeStudentNumber($("loginNumber").value);
       if (!name || !number) {
         toast("학생은 이름과 번호를 입력해야 합니다.");
         return;
@@ -2492,8 +2618,8 @@
       const request = {
         id: Date.now(),
         key: studentKey(),
-        studentName: session.name,
-        number: session.number,
+        studentName: normalizeStudentName(session.name),
+        number: normalizeStudentNumber(session.number),
         date: $("counselDate").value,
         topic: $("counselTopic").value,
         concern: $("counselConcern").value.trim(),
@@ -2575,9 +2701,11 @@
         toast("상담 메모를 입력해 주세요.");
         return;
       }
+      const selectedStudent = state.students[$("recordStudent").value];
       const record = {
         id: Date.now(),
-        studentLabel: $("recordStudent").value || "학생 미선택",
+        studentKey: $("recordStudent").value || "",
+        studentLabel: selectedStudent ? `${selectedStudent.number}번 ${selectedStudent.name}` : "학생 미선택",
         memo: $("recordMemo").value.trim(),
         next: $("recordNext").value.trim(),
         date: new Date().toISOString().slice(0, 10)
